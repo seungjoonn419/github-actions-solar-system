@@ -80,12 +80,10 @@ jobs:
     needs: 
       - unit-testing
       - code-coverage
-    permissions:
-      packages: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      
+    
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -99,3 +97,4 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.actor }}/solar-system:${{ github.sha }}
+
