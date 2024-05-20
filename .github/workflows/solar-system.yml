@@ -83,44 +83,15 @@ jobs:
       - unit-testing
       - code-coverage
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-    
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v2.2.0
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v2
+          username: '${{ github.repository_owner }}'
+          password: '${{ secrets.GITHUB_TOKEN }}'
+      - uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ghcr.io/${{ github.actor }}/solar-system:${{ github.sha }}
+          tags: 'ghcr.io/${{ github.repository_owner }}/solar-system:${{ github.sha }}'
 
-  dev-deploy:
-    name: Development Deployment
-    runs-on: ubuntu-latest
-    needs:
-      - docker
-    environment:
-      name: development
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install Kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: 'v1.26.0'
-
-      - name: Set Kube Context
-        uses: azure/k8s-set-context@v1
-        with:
-          method: kubeconfig
-          kubeconfig: ${{ secrets.DEVELOPMENT_KUBECONFIG }}
-
-      - name: Verify Kubectl and Kube Context
-        run: kubectl version --short -o yaml
