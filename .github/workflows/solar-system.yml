@@ -71,7 +71,7 @@ jobs:
     
       - name: Run Code Coverage
         run: npm run coverage
-        continue-on-error: true  # Continue even if this step fails
+        continue-on-error: true  # 이 단계가 실패하더라도 계속 진행합니다.
       
       - name: Upload Code Coverage Reports
         if: always()
