@@ -16,14 +16,17 @@ jobs:
   unit-testing:
     name: Unit Testing
     runs-on: ubuntu-latest
+    container:
+      image: node:20
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup NodeJS Version
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
+    # Setup Node.js Version step is commented out because Node.js is already available in the container
+    # - name: Setup NodeJS Version
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: 20
 
       - name: Cache NPM dependencies
         uses: actions/cache@v3
@@ -32,10 +35,10 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-    
+
       - name: Install Dependencies
         run: npm install
-    
+
       - name: Unit Testing
         run: npm test
       
@@ -45,6 +48,7 @@ jobs:
         with:
           name: Mocha-Test-Result
           path: test-results.xml
+
 
   code-coverage:
     name: Code Coverage
